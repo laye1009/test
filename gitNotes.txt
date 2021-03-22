@@ -1,0 +1,324 @@
+* Summview: développeur application pour les opérateurs africains
+* https://git-scm.com/ : site officel de git
+* http://gitref.org/ : Pour ne jamais oublier les commandes
+* https://github.io/ : Pour s'entraîner
+* Un gestionnaire de version est un système qui enregistre l'évolution d'un fichier ou d'un ensemble de fichiers au cours d'un temps
+de manière à ce que l'on puisse rappeler une version antérieure à tout moment.
+* type de gestion de version: gestion locale (le système RCS°, centralisée (central VCS Server), système de gestion distribué
+* Beaucou de vcs considèrent l'information qu'ils gèrent comme une liste de fichiers et les modifications: approche en termes
+de différence. Git considèrent les fichiers comme des instantanés pas des différence. Dans les instantanés (snapshot), git
+garde une référence aux ifchiers
+* git gère l'intégrité par une somme de contrôle: toute modification ou suppression est détécté. les somme de contrôle sont en sha-1
+* Les trois états de fichier: validé (en base), modifié (fichier pas en base), indexé (prêt pour envoi ne base)
+* git config : pour modifier les paramètres de configuration
+* Trois niveaux de configuration: Global au système (git config --system), global à l'utilisateur (git config --global),
+global au projet (git config). Chaque niveau surcharge le niveau précédent.
+
+**** Votre identité
+$git config --global user.name "kebe abdoulaye" (faire d'abord git init sinon un fatal error sera émis)
+$git config --global user.email layekebe98@hotmail.com
+
+*****Votre éditeur de text
+$git config --global core.editor emacs \(ou vim ou notepad++)
+
+$ git config --list // la liste des paramètres
+
+****** Démarrer un dépôt git
+$git init 
+$git clone https://github.com/libgit2/libgit2
+
+****** Les modifications Add & Coommit
+* les modifications qui ne seront pas validées sont les modifications non indxées
+* les étapes d'une modif: untacked, unmodified, modified,
+$git add (pour commencer à tracker un fichier)
+$git status -s // affiche les détails des fichiers non suivis
+$git add .gitignore // créer le dossier .gitignore
+* les règles de construction des patrons à placer dans le fichier .getignore
+	les lignes vides ou commençant par # sont ignorées
+	si le patron se termine par une barre oblique(/), il indique un répertoire
+	un patron commençant pat ! indique des fichiers à inclure malgré les autres règles.
+$git diff // affiche les modifications
+$git diff --cached
+$git commit -v // ajoute les modifications (le diff) message du commit
+$git rm file1.txt
+$git mv <source> <destination>
+
+************ Historique
+$git log -h // affiche les options possibles et ouvre la page file:///C:/Program%20Files/Git/mingw64/share/doc/git-doc/git-log.html
+$git log // énumère en ordre chronologique inversé les commits réalisé
+$git log --pretty='%h - %an, %ar : %s' \ pretty peut avoir d'autres options:pretty=short | full | fuller | online
+$git log -1 -p // les infos dudernier commit (-p: affiche tous les changements)
+
+**************Annuler des actions
+$git commit --amend
+$git checkout --<fichier> //annule les modifs apportées à un fichier et revient à son état au dernier commit
+
+**************Désindexer un fichier 
+$git reset HEAD bin/www //retire le ficiher bin/www des Modification qui seront valides
+
+************* Afficher les dépôts distants
+* le dépôt distant s'appelle 'origin'
+$git remote // Pour visualiser les serveurs distants enregistrés en lançant git remote
+$git remote -v // liste tous les dépôts distants
+$git remote add johnpattrick https://github.com/johnpatrick/monprojet //Ajoute le dépôt distant
+$git fetch <nom du repos distant> //retourne les infos sur le dépot
+$git push <depot distant><nom de la branche> //Pousser sont travail sur un dépôt distant
+$git push origin push 
+$git remote show <depot distant> // inspecte un dépot distant
+$git remote rename johnpatrick kebeabdoulaye //Pour renommer une reférence
+$git remote rm kebeabdoulaye // Pour supprimer une référence
+
+*************** ETIQUETAGE
+* git donne la possibilité d'étiqueter un certain état dans l'historique comme important
+$git tag /// liste les étiquettes
+$git tab -l "v1.0.*" /:Recherche une étiquette
+* deuw types d'étiquettes: étiquette légère (ressemble à une branche qui ne change pas, c'est un pointeur 
+sur un commit spécifique) et étiquette annotées (sont stockés en tant qu'objets à part entière dans la base de données de git
+$git tag -a v1.1.0 -m "Ma version 1.1.0" // Créer des étiquettes annotées
+$git show v1.1.0 //afficher en détails votre nouveau tag
+* si on ne spécifie rien, le tag s'applique sur le dernier commit
+* les étiquettes légères stockent tout simplement la somme de contrôle s'un commit dans un fichier. Aucune information
+n'est enregistrée avec l'étiquette
+$git tag // crée une étiquette légère
+
+$git tag -a v1.0.09b92f3b //Pour étiqueter l'ancien commit v1.0.09b92f3b. le nom du commit est obtenu avec git log --pretty=oneline
+
+* git push ne transfère pas les étiquettes vers les serveurs distants
+* Explicitement pousser les étiquettes : $git push origin v1.1.0
+$git push origin --tags //Pousser tous les tags
+* Pour extraire une étiquette faire d'abord un $git fetch puis
+$git check -b v1.1.0 //Pour se placer à la position d'un commit étiqueté
+
+***********************Les branches
+* deux type de branches: les branches au long cours et les branches thématiques
+* une branche thématique est une branche avec une courte durée de vie créé pour une tâche particulière
+$git branch // liste toutes les branches
+$git branch -v // donne plus d'infos
+$git branch testing // crée la branche testing
+$git log --online --decorate // Verifier sur quelle branche on se trouve
+$git checkout testing // Pour changer de branche. Cela e pour effet de déplacer HEAD
+$git log --online --decorate --graph --all // affichage l'arbre du branchage
+$sudo apt-get install gitk // installe gitk pour mieux visualiser l'arbre des branches
+$gitk --all // déploie gitk
+$git checkout -b issue53 // Pour créer et se basculer sur la branche issue53 au lieu de faire git branch issue53 ensuite
+git checkout issue53.
+$git branch -d testing // supprime la branche testing
+$git merge issue53// déplacer le pointeur de la branche master sur issue53. Se trouver d'abord sur la branche master
+* un merge fast-forward: 
+* merge commit: 
+$git checkout HEAD^ // ???
+$git branch --no-merged // liste des branches pas encore fusionnées
+$git branch --merged // liste des branches mergées
+
+****************** les branches distant
+* les branches distantes sont des références vers l'état des branches sur votre dépôt distant
+* les références distants sont des références (pointeurs) vers les éléments de votre dépôt distant tels que les branches, les
+tags, etc.
+$git ls-remote <remote>
+$git branch -a // liste les branches distantes
+* les branches locales ne sont pas automatiquement synchronisées sur les serveurs distants
+$git push <distant> <branche> // pusher une branche
+$git fetch // récupère les  nouvelles branches distantes
+$git checkout -b issue57 origin/issue57 // crée en local la branche issue57 à partir de la branche distante issue57
+$git log -2 // retourne les avant derniers commits
+* Quand vous récupérez une nouvelle branche distante, vous ne crééz pas automatiquement  une copie locale éditable. Mais
+seulement un pointeur sur la branche dsitante qui n'est donc pas modifiable. Pour la fusionner avec notre travail:
+$git merge origin/branchejohnpatrick // ou copier la branche distante dans une nouvelle branche:
+$git checkout -b branchepatrick origin/branchepatrick
+$git push origin HEAD:master HEAD:dev HEAD:prod // push les  commit sur les branches master, dev et prod
+
+***Suivre les branches
+* l'extraction d'une branche locale à partir d'une branche distante crée automatiquement une "branche de suivi"
+$git branch -vv // Connaître la branche suivie
+$git branch -u origin/nouvellebranchesuivie // Changer la branche en branche suivie ou
+$git branch --set-upstream-to origin/nouvellebranchesuivie
+* $git fetch récupère l'ensemble des changements présents sur le serveur, mais elle ne modifie en rien votre répertoire de travail.
+la commande $git merge fusionne les nouveaux changements et $git pull fait un git fetch et un git merge d'un coup
+$git pull origin/issue58 // fetch et merge les modif de la branche issue58 (banche de suivi) sur la branche courante
+
+*** Supprimer une branche distante
+$git push origin --delete <branche> ou $gi
+t push origin :issue57 :issue58
+
+*** Le rebasing
+* Deux façon d'intégrer des modifications dans une branche: en fusionnant (merge) ou en rebasant (rebase)
+* Avec la commande rebase, git prend toutes les modifications qui ont été validées sur une branches et les rejouer une autre
+$git rebase master
+1- $git rebase --onto master server client//fusionner nos modifs de 'client' avec 'master' mais on veut retenir la branche 'master'
+* Maintenant, on veut avancer 'master':
+2- $git checkout master
+3- $git merge client
+* pour rejouer un commit, git considère ses différences par rapport à un autre commit
+* pour faire le rebase de client sur master, git considère la différence de chacun des commit de client par rapport au dernier
+commit de master
+4- $git rebase master server // rebase la branche 'server' à partir de la branche 'master'
+5- $git branch -d client & git branch -d server // supprime les branches restantes
+* Ne rebasez jamais des commits qui ont été déjà poussés sur un dépôt public 
+
+********Les conflits
+* les conflits peuvent exister quand on cherche à merger des modifs effectuées sur deux branches différentes sur un fcihier
+
+*** paramétrage compte github
+* dans ton compte: paramètres > SSH and GPG Keys > ajouter la clé public
+* générer une clé publique: dans cmd: ssh-keygen > cd .ssh/ > cat id_rsa.pub
+* l'authentification à double facteur: google authentificator, sms
+* dupliquer un projet revier à le forker
+
+*** Maintenance d'un projet 
+* faire un pull request avec un message
+$git remote add origin https://github.com/utilisater/nom_du_projet
+* Ajout de collaborateurs: aller dans le setting du projet > collaborators
+$git remote add edouard https;//github.com/...
+$git push didouard HEAD:master
+* Mentions et notifications: settings > Notification center
+* saisir @ dans les commentaire pour afficher des nom d'utilisateurs ou collaborateurs
+* fichiers spéciaux: readme
+
+*** Gestion de regroupemnt
+* les regroupemnts sont des organisations (un groupe de collaborateur): le + qui est à côté du boutton Settings > New organisation
+* Possible de créer un repository dans une organisation
+
+*** Les services
+la section <Hooks & Service" de l'administration de dépôt Github est la façon la plus facile de faire interagir Github
+avec des systèmes externes: le_projet > Setting > Webhooks et Services
+* Si on ne touve pas le service qui convient, créer un webhook avec add webhook qui nécessité un url
+* l'interface de programmation (API) github. exemple curl https://api.github.com/users/<username>
+curl https://api.github.com/gitignore/templates/java
+
+*octokit est le nom de plusieurs clients pour l'api git 
+
+********************* Git avancé
+* les protocoles git : local, http, ssh, le ,protocole git
+$git remote add projet_local path/to/the/project.git
+$git clone ssh://utilisateur@serveur/projet.git // Protocole ssh
+
+* Pour réaliser l'installation initiale d'un serveur git, il faut exporter un dépôt existant dans un nouveau dépôt nu:
+$git clone --bare mon_projet mon_projet.git équivalent à cp -Rf mon_projet/.git mon_projet.git
+$adduser git // ajoute un utilisateur git sur le serveur
+$mkdir /opt/git
+$chown -R git:/opt/git
+$usermod -G git kebe // ajoute kebe dans le groupe d'utilisateur
+$scp -r mon_projet git@git.exemple.com:/opt/git
+$git clone git@git.ferrari.wf/opt/git/project-alphorm.git // clone le dépot local dans le serveur distant dans le repertoire /opt/git/
+$git init --bare --shared //ajoute automatiquement les droit droits de groupe en écriture
+$ cd .ssh/
+$ls -la
+$ scp id_rsa.pub doud@git.ferrari.wf:./ssh \\ copie la clé rsa.pub dans le répertoire ./ssh sur le serveur
+
+*** Ajout des clefs ssh
+>Sur le serveur:
+$sudo adduser git
+$ su git
+$ cd
+$ mkdir /ssh && chmod 700 .ssh
+$ touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys
+
+> Pour ajouter les clefs publiques
+$ cat /tmp/id_rsa.john.pub >> ~/.ssh/authorized_keys
+$ cat /tmp/id_rsa.josie.pub >> ~/.ssh/authorized_keys
+
+> Mettre en place un serveur collaboratif
+sur le server:
+$ su git
+$mkdir neo-project.git
+$cd neo-project.git
+$git init --bare --shared 
+
+$which git-shell //Connaître les binaire de git
+$cat /etc/shells \\ pour ajouter le shell git
+$sudo chsh git // saisir le chemin vers git-shell, souvent /usr/bin/git-shell
+
+*** GIT daemon et git http
+* le protocole git n'a pas d'authentification
+* Pour lancer le daemon:
+$git daemon --reuseaddr --base-path=/opt/git/ /opt/git/
+*Puis dans chaque projet il suffit de créer un fichier:
+$touch git-daemon-export-ok
+
+> laisser tourner un daemon git
+start on startup
+stop on shutdown
+exec /usr/bin/git --user=git --group=git --reuseaddr --base-path=/opt/git/ /opt/git
+respawn
+>>on inscrit le daemon
+$initctl start local-git-daemon
+
+*** git http (installation de Apache)
+* la configuration d'un http intelligent revient simplement à activer sur le serveur un script CGI livré avec git qui s'appelle
+git-http-backend
+* utiliser Apache2 comme serveur http/cgi
+
+*** GitWeb (Installation de Apache)
+$git instaweb --httpd=webrick // Pour démarrer
+$git instaweb --httpd=webrick --stop // Pout arrêter
+$git clone git://git.kernel.org/pub/scm/git/git.git
+$ cd git
+$ make GITWEB_PROJECTROOT="/opt/git" prefix=/usr gitweb
+$cp -Rf gitweb /var/www
+
+*** Gitlab (installation et utilisation)
+* gitlab est une application reposant sur une base de données
+* types d'installation: manuelle, avec une image virtuelle, dans le cloud
+
+******************* Dévelopepements distribués
+* Dans git tout développeur est potentiellement un noeud et un concentrateur
+
+* Tye de gestion: gestion centralisée, le mode de gestionnaire d'intégration: dans ce cas chaque développeur créé une copie publique
+du dépôt et une copie privée (clone sur ordi local). Chaque developpeur fait des push sur la copie publique, le mode dictateur et ses 
+lieutenants: les lieutenant reçcoivent le code des développeur, qui les envoie au dictateur qui fait les intégrations dans le
+dépôt (exemple du développement de linux).
+
+*** git validation
+* les erreurs d'espace: il ne faut pas soumettre de patchs comportant des erreurs d'espace.\ git fournit un moyen simple de 
+le vérifier en lançant: $git diff --check
+* Un sujet = une validation: si on problèmes différents, faire 5 commit avec des branches différentes. Pour chaque modification, 
+faire un commit.
+* le message de validation: avoir l'habitude de mettre un message. les messages débutent par une ligne unique d'au plus 50
+caractères, suivie d'une ligne vide, suivie d'une explication. l'explication détaillée inclue la modtivation de la modification.
+
+
+*** Cas: petite équipe (2 collaborateurs)
+* pour faire un git push sur le dépôt serveur, il faut que la version locale soit la même que sur le server. Sinon faire
+$git fetch puis $git merge
+$git merge origin/master //intègre les modif du dépot distant dans le dépôt local
+$git push origin master // met les dépôt local et distant au même niveau
+$git log issue54...origin/master // pour n'afficher que les commit de la branche origin/master
+*** Cas: Equipe privée:
+$git fetch origin // affiche les modifs du côte du serveur
+$git checkout -b fonctionB origin/master// crée la branche local à partir de origin/master
+$git push -u origin fonctionB:fonctionBee // permet de lier les branches fonctionB (locale) et fonctionBee (branche distante).
+$git log fonctionA..origin/fonctionA // fait div log pour voir la différence entre la branche locale fonctionA et la branche
+distant fonctionA. Autrement dit si les deux branches ont le même point.
+$git merge origin/fonctionA // permet d'actualiser la branche locale par rapport à celle distant. Avant, il faut se placer sur la
+branche local avec $git checkout fonctionA
+
+**** Projet public via email
+* création d'un patch: Sert à envoyer des modification à l'aide de fichiers .patch
+$git format-patch -M origin/master //Crée un export d'une validation grâce au patch (crée des fichiers .patch)
+* Envoyer un patch par email:
+* Possibilité de configurer gmail pour envoyer ces patchs dans ~/.gitconfig:
+[imap]
+	folder="[Gmail]/Drafts"
+	host=imaps://imap.gmail.com
+	user=utilisateur@gamil.com
+	pass=mOtd3p4ss3
+	port=993
+	sslverify=false
+
+$ cat *.patch | git imap-send // envoie les patchs dans votre répertoire Drafts
+
+*** Appliquer des patchs:
+* Quand on s'apprête à intégrer des contributions, une bonne idée consiste à les essayer d'abord dans une branche
+thématique.
+* créer des branches thématiques avec les initiaux du développeur suivi du nom de son travail
+$git apply patch-js-client.patch // utlisé dans le cas où le patch est généré par la commande git diff ou diff Unix. C'est 
+quasiment identique à la commande patch -p1
+$git apply --check patch-js-client.patch
+
+* Application avec am
+$git am patch-js-client.patch // si le patch est généré par la commande format-patch
+* si la contribution a été fourni par un utilisateur qui a mis en place son propre dépôt en public. Ajouter le dépôt
+avec les ligne suivantes:
+$git remote add jessica git://github.com/jessica/monprojet.git \ ou
+$git fetch jessica
+$git checkout -b jsclient jessica/js-client
